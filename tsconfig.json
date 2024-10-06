@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "outDir": "./public/js",  // Output directory for compiled JS files
+    "rootDir": "./public/ts",  // Source directory for TS files
+
+    "lib": ["DOM", "es2019"],
+    "target": "ES6",
+    "module": "ESNext",
+    "strict": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+  }
+}

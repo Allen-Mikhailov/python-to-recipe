@@ -1,0 +1,31 @@
+body {
+    margin: 0px;
+}
+
+.main-content {
+    position: absolute;
+    width: min(90vw, max(60vw, 80vh));
+    height: 70vh;
+
+    
+    left: 50%;
+    top: 50%;
+    translate: -50% -50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.main-content-margin {
+    width: 5%;
+}
+
+.text-block {
+    flex: 1;
+    resize: none;
+    height: 100%;
+    background-color: black;
+
+    color: white;
+}
