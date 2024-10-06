@@ -47,14 +47,22 @@ const wrapper_token_map: {[id: string]: TokenType} = {
     "]": TokenType.BracketEnd,
     "(": TokenType.ParenthesisStart,
     ")": TokenType.ParenthesisEnd,
-    "+": TokenType.Operator
+    "+": TokenType.Operator,
+    "-": TokenType.Operator,
+    "+=": TokenType.Operator,
+    "-=": TokenType.Operator,
+    "=": TokenType.Operator,
+    "==": TokenType.Operator,
+    "%": TokenType.Operator,
+    "*": TokenType.Operator,
+    "/": TokenType.Operator,
+    "//": TokenType.Operator,
 }
 
 function StringToLine(python_string: string)
 {
     let tokens: Token[] = [];
 
-    let index = 0;
     let current_token = "";
     let in_comment = false;
     let in_string = false;
@@ -143,11 +151,29 @@ function StringToLine(python_string: string)
             continue;
         }
 
-        
+        if (wrapper_token_map[char2] != null)
+        {
+            new_token()
+            tokens.push(new Token(wrapper_token_map[char2], char2));
+            i+=1;
+            continue;
+        }
+
+        if (wrapper_token_map[char3] != null)
+        {
+            new_token()
+            tokens.push(new Token(wrapper_token_map[char3], char3));
+            i+=2;
+            continue;
+        }
+
+        current_token += char;
     }
 
     new_token()
 
+    console.log(tokens)
+    return tokens
 }
 
 function ConvertToSequences(python_string: string)
