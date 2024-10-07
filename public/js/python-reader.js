@@ -11,14 +11,16 @@ class Line {
     }
 }
 class Statement {
-    constructor(name) {
-        this.name = name;
-    }
-    matches_line(line) {
-        return false;
+    constructor() {
     }
     to_recipe() {
         return "";
+    }
+}
+class Scope extends Statement {
+    constructor(indent) {
+        super();
+        this.statements = [];
     }
 }
 const wrapper_token_map = {
@@ -36,6 +38,7 @@ const wrapper_token_map = {
     "*": TokenType.Operator,
     "/": TokenType.Operator,
     "//": TokenType.Operator,
+    ",": TokenType.Comma,
 };
 function StringToLine(python_string) {
     let tokens = [];
@@ -119,9 +122,26 @@ function StringToLine(python_string) {
         current_token += char;
     }
     new_token();
-    console.log(tokens);
     return tokens;
 }
-function ConvertToSequences(python_string) {
+function GetStringIndent(str) {
+    let indent = 0;
+    while (true) {
+        if (str.startsWith("    "))
+            str = str.substring(4);
+        else if (str.startsWith("\t"))
+            str = str.substring(1);
+        else
+            break;
+        indent++;
+    }
+    return indent;
 }
-export { StringToLine };
+function ConvertToSequences(python_string) {
+    const lines = python_string.split("\n");
+    const line_indents = [];
+    lines.map((line) => {
+        console.log(StringToLine(line));
+    });
+}
+export { StringToLine, ConvertToSequences };

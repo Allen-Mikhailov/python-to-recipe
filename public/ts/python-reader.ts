@@ -24,21 +24,25 @@ class Line
 
 class Statement
 {
-    name: string;
-
-    constructor(name: string)
+    constructor()
     {
-        this.name = name;
-    }
-
-    matches_line(line: Line): boolean
-    {
-        return false;
+        
     }
 
     to_recipe(): string
     {
         return ""
+    }
+}
+
+class Scope extends Statement
+{
+    statements: Statement[]
+
+    constructor(indent: number)
+    {
+        super()
+        this.statements = []
     }
 }
 
@@ -57,6 +61,7 @@ const wrapper_token_map: {[id: string]: TokenType} = {
     "*": TokenType.Operator,
     "/": TokenType.Operator,
     "//": TokenType.Operator,
+    ",": TokenType.Comma,
 }
 
 function StringToLine(python_string: string)
@@ -171,14 +176,35 @@ function StringToLine(python_string: string)
     }
 
     new_token()
-
-    console.log(tokens)
     return tokens
+}
+
+function GetStringIndent(str: string): number
+{
+    let indent: number = 0;
+    while (true)
+    {
+        if (str.startsWith("    "))
+            str = str.substring(4)
+        else if (str.startsWith("\t")) 
+            str = str.substring(1)
+        else 
+            break
+
+        indent++;
+    }
+
+    return indent
 }
 
 function ConvertToSequences(python_string: string)
 {
+    const lines: string[] = python_string.split("\n")
+    const line_indents: number[] = []
+    lines.map((line) => {
+        console.log(StringToLine(line))
+    })
 
 }
 
-export { StringToLine }
+export { StringToLine, ConvertToSequences }
