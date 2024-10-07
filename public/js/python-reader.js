@@ -1,13 +1,8 @@
-import { TokenType } from "./python-data.js";
+import { Keywords, TokenType } from "./python-data.js";
 class Token {
     constructor(type, content) {
         this.type = type;
         this.content = content;
-    }
-}
-class Line {
-    constructor(tokens) {
-        this.tokens = tokens;
     }
 }
 class Statement {
@@ -17,10 +12,32 @@ class Statement {
         return "";
     }
 }
+class VariableSet {
+    constructor(tokens) {
+        this.tokens = tokens;
+    }
+}
 class Scope extends Statement {
     constructor(indent) {
         super();
+        this.indent = indent;
         this.statements = [];
+    }
+    add_statement(statement) {
+        this.statements.push(statement);
+    }
+}
+class VariableMulti extends Statement {
+    constructor(variables) {
+        super();
+        this.variables = variables;
+    }
+}
+class ForLoop extends Scope {
+    constructor(indent, variables, loop_statement) {
+        super(indent);
+        this.variables = variables;
+        this.loop_statement = loop_statement;
     }
 }
 const wrapper_token_map = {
@@ -28,6 +45,8 @@ const wrapper_token_map = {
     "]": TokenType.BracketEnd,
     "(": TokenType.ParenthesisStart,
     ")": TokenType.ParenthesisEnd,
+    "{": TokenType.BracesStart,
+    "}": TokenType.BracesEnd,
     "+": TokenType.Operator,
     "-": TokenType.Operator,
     "+=": TokenType.Operator,
@@ -37,8 +56,13 @@ const wrapper_token_map = {
     "%": TokenType.Operator,
     "*": TokenType.Operator,
     "/": TokenType.Operator,
+    ">": TokenType.Operator,
+    "<": TokenType.Operator,
+    ">=": TokenType.Operator,
+    "<=": TokenType.Operator,
     "//": TokenType.Operator,
     ",": TokenType.Comma,
+    ":": TokenType.Colon,
 };
 function StringToLine(python_string) {
     let tokens = [];
@@ -61,6 +85,12 @@ function StringToLine(python_string) {
         }
         if (in_comment) {
             token_type = TokenType.Comment;
+        }
+        else if (Number(current_token)) {
+            token_type = TokenType.Number;
+        }
+        else if (Object.keys(Keywords).includes(current_token)) {
+            token_type = TokenType.Keyword;
         }
         tokens.push(new Token(token_type, current_token));
         reset_token_counters();
@@ -137,11 +167,30 @@ function GetStringIndent(str) {
     }
     return indent;
 }
+const container_symbols = {
+    [TokenType.BracesStart]: TokenType.BracesEnd,
+    [TokenType.ParenthesisStart]: TokenType.ParenthesisEnd,
+    [TokenType.BracketStart]: TokenType.BracketEnd
+};
+function EvaluateTokenSequence(token) {
+    let container_stack = [];
+    throw Error("Unable to create Statement");
+}
 function ConvertToSequences(python_string) {
     const lines = python_string.split("\n");
-    const line_indents = [];
-    lines.map((line) => {
-        console.log(StringToLine(line));
-    });
+    let last_indent = 0;
+    let scope_stack = [new Scope(0)];
+    for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        const tokens = StringToLine(line);
+        if (tokens.length == 0)
+            continue;
+        const indent = GetStringIndent(line);
+        console.log("indent", indent, line, tokens);
+        const first_token = tokens[0];
+        if (first_token.content === "for") {
+            // Is a for loop
+        }
+    }
 }
 export { StringToLine, ConvertToSequences };

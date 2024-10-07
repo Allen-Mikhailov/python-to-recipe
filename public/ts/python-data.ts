@@ -1,5 +1,6 @@
 enum TokenType {
     Keyword,
+    Number,
     String,
     Variable,
     Operator,
@@ -7,7 +8,10 @@ enum TokenType {
     BracketEnd,
     ParenthesisStart,
     ParenthesisEnd,
+    BracesStart,
+    BracesEnd,
     Comma,
+    Colon,
     Comment
 }
 

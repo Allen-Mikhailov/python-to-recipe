@@ -1,4 +1,4 @@
-import { TokenType } from "./python-data.js"
+import { Keywords, TokenType } from "./python-data.js"
 
 class Token
 {
@@ -9,16 +9,6 @@ class Token
     {
         this.type = type;
         this.content = content;
-    }
-}
-
-class Line
-{
-    tokens: Token[];
-
-    constructor(tokens: Token[])
-    {
-        this.tokens = tokens;
     }
 }
 
@@ -35,14 +25,52 @@ class Statement
     }
 }
 
+class VariableSet
+{
+    tokens: Token[]
+    constructor(tokens: Token[])
+    {
+        this.tokens = tokens;
+    }
+}
+
 class Scope extends Statement
 {
     statements: Statement[]
+    indent: number
 
     constructor(indent: number)
     {
         super()
+        this.indent = indent
         this.statements = []
+    }
+
+    add_statement(statement: Statement)
+    {
+        this.statements.push(statement)
+    }
+}
+
+class VariableMulti extends Statement
+{
+    variables: Token[]
+    constructor(variables: Token[])
+    {
+        super()
+        this.variables = variables
+    }
+}
+
+class ForLoop extends Scope
+{
+    variables: VariableMulti
+    loop_statement: Statement
+    constructor(indent: number, variables: VariableMulti, loop_statement: Statement)
+    {
+        super(indent)
+        this.variables = variables
+        this.loop_statement = loop_statement
     }
 }
 
@@ -51,6 +79,8 @@ const wrapper_token_map: {[id: string]: TokenType} = {
     "]": TokenType.BracketEnd,
     "(": TokenType.ParenthesisStart,
     ")": TokenType.ParenthesisEnd,
+    "{": TokenType.BracesStart,
+    "}": TokenType.BracesEnd,
     "+": TokenType.Operator,
     "-": TokenType.Operator,
     "+=": TokenType.Operator,
@@ -60,8 +90,13 @@ const wrapper_token_map: {[id: string]: TokenType} = {
     "%": TokenType.Operator,
     "*": TokenType.Operator,
     "/": TokenType.Operator,
+    ">": TokenType.Operator,
+    "<": TokenType.Operator,
+    ">=": TokenType.Operator,
+    "<=": TokenType.Operator,
     "//": TokenType.Operator,
     ",": TokenType.Comma,
+    ":": TokenType.Colon,
 }
 
 function StringToLine(python_string: string)
@@ -92,7 +127,12 @@ function StringToLine(python_string: string)
         if (in_comment)
         {
             token_type = TokenType.Comment;
+        } else if (Number(current_token)) {
+            token_type = TokenType.Number;
+        } else if (Object.keys(Keywords).includes(current_token)) {
+            token_type = TokenType.Keyword;
         }
+            
 
         tokens.push(new Token(token_type, current_token));
         reset_token_counters();
@@ -197,13 +237,44 @@ function GetStringIndent(str: string): number
     return indent
 }
 
+const container_symbols = {
+    [TokenType.BracesStart]: TokenType.BracesEnd,
+    [TokenType.ParenthesisStart]: TokenType.ParenthesisEnd,
+    [TokenType.BracketStart]: TokenType.BracketEnd
+}
+
+function EvaluateTokenSequence(token: Token[]): Statement
+{
+    let container_stack: TokenType[] = []
+
+    
+
+    throw Error("Unable to create Statement")
+}
+
 function ConvertToSequences(python_string: string)
 {
-    const lines: string[] = python_string.split("\n")
-    const line_indents: number[] = []
-    lines.map((line) => {
-        console.log(StringToLine(line))
-    })
+    const lines: string[] = python_string.split("\n");
+    let last_indent: number = 0;
+    let scope_stack: Scope[] = [new Scope(0)]
+    for (let i = 0; i < lines.length; i++)
+    {
+        const line = lines[i];
+
+        const tokens = StringToLine(line)
+        if (tokens.length == 0)
+            continue
+
+        const indent = GetStringIndent(line);
+        console.log("indent", indent, line, tokens);
+
+        const first_token = tokens[0]
+        if (first_token.content === "for")
+        {
+            // Is a for loop
+
+        }
+    }
 
 }
 

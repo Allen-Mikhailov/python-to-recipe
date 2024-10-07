@@ -1,15 +1,19 @@
 var TokenType;
 (function (TokenType) {
     TokenType[TokenType["Keyword"] = 0] = "Keyword";
-    TokenType[TokenType["String"] = 1] = "String";
-    TokenType[TokenType["Variable"] = 2] = "Variable";
-    TokenType[TokenType["Operator"] = 3] = "Operator";
-    TokenType[TokenType["BracketStart"] = 4] = "BracketStart";
-    TokenType[TokenType["BracketEnd"] = 5] = "BracketEnd";
-    TokenType[TokenType["ParenthesisStart"] = 6] = "ParenthesisStart";
-    TokenType[TokenType["ParenthesisEnd"] = 7] = "ParenthesisEnd";
-    TokenType[TokenType["Comma"] = 8] = "Comma";
-    TokenType[TokenType["Comment"] = 9] = "Comment";
+    TokenType[TokenType["Number"] = 1] = "Number";
+    TokenType[TokenType["String"] = 2] = "String";
+    TokenType[TokenType["Variable"] = 3] = "Variable";
+    TokenType[TokenType["Operator"] = 4] = "Operator";
+    TokenType[TokenType["BracketStart"] = 5] = "BracketStart";
+    TokenType[TokenType["BracketEnd"] = 6] = "BracketEnd";
+    TokenType[TokenType["ParenthesisStart"] = 7] = "ParenthesisStart";
+    TokenType[TokenType["ParenthesisEnd"] = 8] = "ParenthesisEnd";
+    TokenType[TokenType["BracesStart"] = 9] = "BracesStart";
+    TokenType[TokenType["BracesEnd"] = 10] = "BracesEnd";
+    TokenType[TokenType["Comma"] = 11] = "Comma";
+    TokenType[TokenType["Colon"] = 12] = "Colon";
+    TokenType[TokenType["Comment"] = 13] = "Comment";
 })(TokenType || (TokenType = {}));
 var Keywords;
 (function (Keywords) {
