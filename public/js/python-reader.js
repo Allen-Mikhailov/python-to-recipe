@@ -27,10 +27,40 @@ class Scope extends Statement {
         this.statements.push(statement);
     }
 }
-class VariableMulti extends Statement {
-    constructor(variables) {
+class ContainerStatement extends Statement {
+    constructor(statements) {
         super();
-        this.variables = variables;
+        this.statements = statements;
+    }
+}
+class VariableStatement extends Statement {
+    constructor(name) {
+        super();
+        this.name = name;
+    }
+}
+class StringStatement extends Statement {
+    constructor(name) {
+        super();
+        this.name = name;
+    }
+}
+class NumberStatement extends Statement {
+    constructor(num) {
+        super();
+        this.num = num;
+    }
+}
+class OperatorStatement extends Statement {
+    constructor(left, right) {
+        super();
+        this.left = left;
+        this.right = right;
+    }
+}
+class MultiplyStatement extends OperatorStatement {
+    constructor(left, right) {
+        super(left, right);
     }
 }
 class ForLoop extends Scope {
@@ -172,8 +202,10 @@ const container_symbols = {
     [TokenType.ParenthesisStart]: TokenType.ParenthesisEnd,
     [TokenType.BracketStart]: TokenType.BracketEnd
 };
-function EvaluateTokenSequence(token) {
-    let container_stack = [];
+function EvaluateTokenSequence(tokens) {
+    const tree = [...tokens];
+    for (let i = 0; i < tokens.length; i++) {
+    }
     throw Error("Unable to create Statement");
 }
 function ConvertToSequences(python_string) {

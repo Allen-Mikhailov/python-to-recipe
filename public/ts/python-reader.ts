@@ -52,21 +52,71 @@ class Scope extends Statement
     }
 }
 
-class VariableMulti extends Statement
+class ContainerStatement extends Statement
 {
-    variables: Token[]
-    constructor(variables: Token[])
+    statements: Statement[]
+    constructor(statements: Statement[])
     {
         super()
-        this.variables = variables
+        this.statements = statements
+    }
+}
+
+class VariableStatement extends Statement
+{
+    name: string
+    constructor(name: string)
+    {
+        super()
+        this.name = name;
+    }
+}
+
+class StringStatement extends Statement
+{
+    name: string
+    constructor(name: string)
+    {
+        super()
+        this.name = name;
+    }
+}
+
+class NumberStatement extends Statement
+{
+    num: number
+    constructor(num: number)
+    {
+        super()
+        this.num = num;
+    }
+}
+
+class OperatorStatement extends Statement
+{
+    left: Statement;
+    right: Statement;
+    constructor(left: Statement, right: Statement)
+    {
+        super()
+        this.left = left
+        this.right = right
+    }
+}
+
+class MultiplyStatement extends OperatorStatement
+{
+    constructor(left: Statement, right: Statement)
+    {
+        super(left, right);
     }
 }
 
 class ForLoop extends Scope
 {
-    variables: VariableMulti
+    variables: ContainerStatement
     loop_statement: Statement
-    constructor(indent: number, variables: VariableMulti, loop_statement: Statement)
+    constructor(indent: number, variables: ContainerStatement, loop_statement: Statement)
     {
         super(indent)
         this.variables = variables
@@ -243,11 +293,13 @@ const container_symbols = {
     [TokenType.BracketStart]: TokenType.BracketEnd
 }
 
-function EvaluateTokenSequence(token: Token[]): Statement
+function EvaluateTokenSequence(tokens: Token[]): Statement
 {
-    let container_stack: TokenType[] = []
+    const tree: (Token|Statement)[] = [...tokens]
+    for (let i = 0; i < tokens.length; i++)
+    {
 
-    
+    }
 
     throw Error("Unable to create Statement")
 }

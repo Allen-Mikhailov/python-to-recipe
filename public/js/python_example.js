@@ -12,12 +12,12 @@ print("Name:", name, "Age:", age, "Developer:", is_developer, "Salary:", salary)
 # 2. Lists and Loops
 programming_languages = ["Python", "Java", "C++", "JavaScript"]
 
-print("\\nList of Programming Languages:")
+print("\nList of Programming Languages:")
 for language in programming_languages:
     print(language)
 
 # 3. Conditionals
-print("\\nChecking if Alice is an experienced developer:")
+print("\nChecking if Alice is an experienced developer:")
 if age > 25 and is_developer:
     print(name, "is an experienced developer.")
 else:
@@ -29,7 +29,7 @@ def calculate_bonus(salary, bonus_percentage):
     return bonus
 
 bonus = calculate_bonus(salary, 10)  # 10% bonus
-print("\\nBonus:", bonus)
+print("\nBonus:", bonus)
 
 # 5. Dictionaries
 developer_info = {
@@ -39,7 +39,7 @@ developer_info = {
     "salary": salary
 }
 
-print("\\nDeveloper Info Dictionary:")
+print("\nDeveloper Info Dictionary:")
 for key in developer_info:
     print(key, ":", developer_info[key])
 `;
