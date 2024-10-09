@@ -63,6 +63,13 @@ class MultiplyStatement extends OperatorStatement {
         super(left, right);
     }
 }
+// Temp
+class TokenList extends Statement {
+    constructor(tokens) {
+        super();
+        this.tokens = tokens;
+    }
+}
 class ForLoop extends Scope {
     constructor(indent, variables, loop_statement) {
         super(indent);
@@ -202,11 +209,39 @@ const container_symbols = {
     [TokenType.ParenthesisStart]: TokenType.ParenthesisEnd,
     [TokenType.BracketStart]: TokenType.BracketEnd
 };
+function matches_token(token, type) {
+    return token instanceof Token && token.type == type;
+}
 function EvaluateTokenSequence(tokens) {
-    const tree = [...tokens];
+    const tree = [];
+    // Handling Containers
     for (let i = 0; i < tokens.length; i++) {
+        console.log(i, tokens[i]);
+        if (tokens[i] instanceof Token && tokens[i].type in container_symbols) {
+            const token = tokens[i];
+            const starting_symbol = token.type;
+            const ending_symbol = container_symbols[token.type];
+            const container_tokens = [];
+            let count = 1;
+            for (let j = i + 1; j < tokens.length; j++) {
+                if (matches_token(tokens[j], starting_symbol))
+                    count++;
+                else if (matches_token(tokens[j], ending_symbol)) {
+                    count--;
+                    if (count == 0) {
+                        tree.push(EvaluateTokenSequence(container_tokens));
+                        i += container_tokens.length + 1;
+                        break;
+                    }
+                }
+                container_tokens.push(tokens[j]);
+            }
+        }
+        else {
+            tree.push(tokens[i]);
+        }
     }
-    throw Error("Unable to create Statement");
+    return new TokenList(tree);
 }
 function ConvertToSequences(python_string) {
     const lines = python_string.split("\n");
@@ -218,7 +253,8 @@ function ConvertToSequences(python_string) {
         if (tokens.length == 0)
             continue;
         const indent = GetStringIndent(line);
-        console.log("indent", indent, line, tokens);
+        console.log("Tokens", tokens);
+        console.log("Sequence", EvaluateTokenSequence(tokens));
         const first_token = tokens[0];
         if (first_token.content === "for") {
             // Is a for loop

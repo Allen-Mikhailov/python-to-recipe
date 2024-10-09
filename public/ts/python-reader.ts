@@ -112,6 +112,17 @@ class MultiplyStatement extends OperatorStatement
     }
 }
 
+// Temp
+class TokenList extends Statement
+{
+    tokens: (Token|Statement)[]
+    constructor(tokens: (Token|Statement)[])
+    {
+        super()
+        this.tokens = tokens
+    }
+}
+
 class ForLoop extends Scope
 {
     variables: ContainerStatement
@@ -287,21 +298,57 @@ function GetStringIndent(str: string): number
     return indent
 }
 
-const container_symbols = {
+const container_symbols: Partial<{[key in TokenType]: TokenType}> = {
     [TokenType.BracesStart]: TokenType.BracesEnd,
     [TokenType.ParenthesisStart]: TokenType.ParenthesisEnd,
     [TokenType.BracketStart]: TokenType.BracketEnd
 }
 
-function EvaluateTokenSequence(tokens: Token[]): Statement
+function matches_token(token: Token|Statement, type: TokenType): boolean
 {
-    const tree: (Token|Statement)[] = [...tokens]
+    return token instanceof Token && (token as Token).type == type
+}
+
+function EvaluateTokenSequence(tokens: (Token|Statement)[]): Statement
+{
+    const tree: (Token|Statement)[] = []
+
+    // Handling Containers
+
     for (let i = 0; i < tokens.length; i++)
     {
+        console.log(i, tokens[i] )
+        if (tokens[i] instanceof Token && (tokens[i] as Token).type in container_symbols)
+        {
+            const token = tokens[i] as Token
+            const starting_symbol = token.type
+            const ending_symbol = container_symbols[token.type] as TokenType
 
+            const container_tokens: (Token|Statement)[] = []
+
+            let count = 1
+            for (let j = i+1; j < tokens.length; j++)
+            {
+                if (matches_token(tokens[j], starting_symbol))
+                    count++;
+                else if (matches_token(tokens[j], ending_symbol)) {
+                    count--;
+                    if (count == 0)
+                    {
+                        tree.push(EvaluateTokenSequence(container_tokens))
+                        i += container_tokens.length+1
+                        break;
+                    }
+                } 
+
+                container_tokens.push(tokens[j])
+            }
+        } else {
+            tree.push(tokens[i])
+        }
     }
 
-    throw Error("Unable to create Statement")
+    return new TokenList(tree);
 }
 
 function ConvertToSequences(python_string: string)
@@ -318,7 +365,8 @@ function ConvertToSequences(python_string: string)
             continue
 
         const indent = GetStringIndent(line);
-        console.log("indent", indent, line, tokens);
+        console.log("Tokens", tokens);
+        console.log("Sequence", EvaluateTokenSequence(tokens));
 
         const first_token = tokens[0]
         if (first_token.content === "for")
